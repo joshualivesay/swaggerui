@@ -19,7 +19,7 @@
     "jshint": "jshint .",
     "pretest": "npm run jshint",
     "test": "mocha",
-    "start": "node server.js"
+    "start": "node index.js"
   },
   "engines": {
     "node": "6.2.1"
