@@ -1,0 +1,302 @@
+# Example YAML to get you started quickly.
+# Be aware that YAML has indentation based scoping.
+# Code completion support is available so start typing for available options.
+swagger: '2.0'
+
+# This is your document metadata
+info:
+  version: "1.0.0"
+  title: CodeIRL
+
+# Describe your paths here
+paths:
+  # This is a path endpoint. Change it.
+  /authentications:
+    # This is a HTTP operation
+    post:
+      tags: 
+        - auth
+      # Describe this verb here. Note: you can use markdown
+      description: |
+        Log a user in
+      # This is array of GET operation parameters:
+      parameters:
+        # An example parameter that is in query and is required
+        - in: body
+          name: body
+          description: Authentication Object
+          required: false
+          schema:
+            $ref: "#/definitions/Authentication"
+      # Expected responses for this operation:
+      responses:
+        # Response code
+        200:
+          description: Successful response
+          # A schema describing your response object.
+          # Use JSON Schema format
+          schema:
+            title: TokenObject
+            type: object
+            properties:
+              token:
+                type: string
+  /users:
+      # This is a HTTP operation
+      post:
+        tags: 
+          - User
+        # Describe this verb here. Note: you can use markdown
+        description: |
+          Gets all users
+        # This is array of GET operation parameters:
+        parameters:
+          # An example parameter that is in query and is required
+          - in: body
+            name: body
+            description: User object
+            required: false
+            schema:
+              $ref: "#/definitions/User"
+        # Expected responses for this operation:
+        responses:
+          # Response code
+          200:
+            description: Successful response
+            # A schema describing your response object.
+            # Use JSON Schema format
+            schema:
+              $ref: "#/definitions/User"
+  /users/{user_id}:
+    # This is a HTTP operation
+    get:
+      tags: 
+        - User
+      # Describe this verb here. Note: you can use markdown
+      description: |
+        Gets a users info
+      # This is array of GET operation parameters:
+      parameters:
+        - name: user_id
+          in: path
+          description: ID of user
+          required: true
+          type: integer
+          format: int64
+      # Expected responses for this operation:
+      responses:
+        # Response code
+        200:
+          description: Successful response
+          # A schema describing your response object.
+          # Use JSON Schema format
+          schema:
+            $ref: "#/definitions/User"
+    put:
+      tags: 
+        - User
+      # Describe this verb here. Note: you can use markdown
+      description: |
+        Gets all users
+      # This is array of GET operation parameters:
+      parameters:
+        # An example parameter that is in query and is required
+        - name: user_id
+          in: path
+          description: ID of user
+          required: true
+          type: integer
+          format: int64
+        
+        - in: body
+          name: body
+          description: User object
+          required: false
+          schema:
+            $ref: "#/definitions/User"
+      # Expected responses for this operation:
+      responses:
+        # Response code
+        200:
+          description: Successful response
+          # A schema describing your response object.
+          # Use JSON Schema format
+          schema:
+            $ref: "#/definitions/User"    
+              
+  /focuses:
+    get:
+      tags: 
+        - Focus
+      description: |
+        List all focuses
+      parameters:
+        - name: name
+          in: query
+          description: Fuzzy search to filter focus
+          required: false
+          type: string
+      responses:
+        200:
+          description: Sucessful Response
+          schema:
+            $ref: "#/definitions/Focus"
+            
+  /sessions:
+    get:
+      tags: 
+        - Session
+      description: |
+        List all upcoming sessions.  We only show sessions that match 
+        the users focuses, and that are happening soon.
+      parameters:
+        - name: search
+          in: query
+          description: Fuzzy search to filter sessions
+          type: string
+      responses:
+        200:
+          description: Sucessful Response
+          schema:
+            $ref: "#/definitions/Session"
+    post:
+      tags: 
+        - Session
+      description: |
+        Create a new session
+      parameters:
+        - in: body
+          name: body
+          description: Params for session
+          schema: 
+            $ref: "#/definitions/Session"
+      responses:
+        200:
+          description: Sucessful Response
+          schema:
+            $ref: "#/definitions/Session"
+  /sessions/{session_id}:
+    put:
+      tags:
+        - User
+      description: |
+        Edit a session
+      parameters:
+        - name: session_id
+          in: path
+          description: ID of user
+          required: true
+          type: integer
+          format: int64
+          
+        - name: body
+          in: body
+          description: json of the object
+          schema:
+            $ref: "#/definitions/Session"
+      responses:
+        200:
+          description: Sucessful Response
+          schema:
+            $ref: "#/definitions/Session"
+    delete:
+      tags: 
+        - User
+      description: |
+        Deletes a session
+      parameters:
+        - name: session_id
+          in: path
+          description: ID of user
+          required: true
+          type: integer
+          format: int64
+      responses:
+        200:
+          description: Sucessful responses
+definitions:
+  Authentication:
+    type: object
+    required:
+      - username
+      - password
+    properties:
+      username:
+        type: string
+      password:
+        type: string
+  User:
+    type: object
+    required:
+      - username
+      - email
+      - password
+    properties:
+      id:
+        type: integer
+      username:
+        type: string
+      email:
+        type: string
+      password:
+        type: string
+      github:
+        type: string
+      optin:
+        type: boolean
+      focuses:
+        type: array
+        items:
+          $ref: "#/definitions/Focus"
+  Focus:
+    type: object
+    required:
+      - name
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+  Code:
+    type: object
+    required:
+      - name
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+      description:
+        type: string
+      focus:
+        $ref: "#/definitions/Focus"
+      link:
+        type: string
+      rank:
+        type: integer
+  
+  Session:
+    type: object
+    properties:
+      id:
+        type: integer
+      name: 
+        type: string
+      user:
+        $ref: "#/definitions/User"
+      focus:
+        $ref: "#/definitions/Focus"
+      code:
+        $ref: "#/definitions/Code"
+      users:
+        type: array
+        items:
+          $ref: "#/definitions/User"
+      start_at:
+        type: string
+      slots:
+        type: integer
+      rank:
+        type: boolean
+      started:
+        type: boolean
